@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     char sez_input[100];
     printf("Hello world!\n");
-    
+     
     fgets(sez_input, 100, stdin);
 
     printf("%s", sez_input);
