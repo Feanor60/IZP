@@ -2,6 +2,18 @@
 #include <string.h>
 #include <stdbool.h>
 
+char remove_newline(char *s)
+{   
+    char [101];
+    strcpy(jmeno, *s)
+
+    if(*jmeno[strlen(s) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
+        {
+            s[strlen(s) - 1] = '\0';
+        }
+    return
+}
+
 void vypis_kontakty()
 {
     char from_seznam[101];
@@ -9,8 +21,11 @@ void vypis_kontakty()
 
     while(fgets(from_seznam, 101, stdin) != 0)
     {
-        from_seznam[strlen(from_seznam) - 1] = '\0';//TODO: pokud nema string newline znak tak ho to o 1 zkrati - opravit
-        
+        if(from_seznam[strlen(from_seznam) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
+        {
+            from_seznam[strlen(from_seznam) - 1] = '\0';
+        }
+
         if(radek % 2 == 1) //pokud je zbytek po deleni dvema 1 tak se jedna o lichy radek
         {
             printf("%s, ", from_seznam);
@@ -40,7 +55,6 @@ int main(int argc, char *argv[])
        return 0;
     }
 
-    printf("delka vyhledavaciho parametru: %lu\n", strlen(vyhledavaci_parametr));
     //cyklus pro hledani v seznam.txt
 
     char jmeno[101];
@@ -53,10 +67,18 @@ int main(int argc, char *argv[])
         fgets(z_stdin, strlen(z_stdin), stdin);
         strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
 
-        // jmeno[strlen(jmeno) - 1] = '\0'; //TODO: pokud nema string newline znak tak ho to o 1 zkrati - opravit
-        // tel_cislo[strlen(tel_cislo) - 1] = '\0';//TODO: pokud nema string newline znak tak ho to o 1 zkrati - opravit
+        if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
+        {
+            jmeno[strlen(jmeno) - 1] = '\0';
+        }
 
-        printf("1\n");
+
+        if(tel_cislo[strlen(tel_cislo) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
+        {
+            tel_cislo[strlen(tel_cislo) - 1] = '\0';
+        }
+
+        
         int j = 0;
 
         while(j <= (int) strlen(tel_cislo))
@@ -64,8 +86,6 @@ int main(int argc, char *argv[])
             bool nepreruseno = true; //kontroluje zda je dodrzena posloupnost
             int nalezeno = 0; //TODO
             int i = 0;
-            // printf("delka tel cisla je: %lu ", strlen(tel_cislo));
-            // printf("prave prochazene tel cislo: %s\n", tel_cislo);
         
             while(nepreruseno)
             {
@@ -78,14 +98,16 @@ int main(int argc, char *argv[])
                 {
                     nepreruseno = false;
                 }
+                
+                j++;
 
                 if((int) strlen(vyhledavaci_parametr)==nalezeno)
                 {
-                    printf("Match, pozice: %s %d\n", tel_cislo, j);
+                    printf("%s %s\n",jmeno, tel_cislo);
+                    j = (int) strlen(tel_cislo);
                     break;
                 }
-                j++;
-                
+                               
             }
             
         }
