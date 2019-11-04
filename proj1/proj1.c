@@ -2,17 +2,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-char remove_newline(char *s)
-{   
-    char [101];
-    strcpy(jmeno, *s)
-
-    if(*jmeno[strlen(s) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
-        {
-            s[strlen(s) - 1] = '\0';
-        }
-    return
-}
 
 void vypis_kontakty()
 {
@@ -38,6 +27,11 @@ void vypis_kontakty()
     }       
 }
 
+void prohledej_seznam(char tel_cislo[101], vyhledavaci_argument[101])
+{
+    
+}
+
 int main(int argc, char *argv[])
 {
     char *vyhledavaci_parametr = argv[1];
@@ -60,12 +54,14 @@ int main(int argc, char *argv[])
     char jmeno[101];
     char tel_cislo[101];
     char z_stdin[101];
+    bool cislo_vypsano = false;
 
     while(fgets(z_stdin, 101, stdin) != NULL) //dokud fgets cte z stdin
     {
         strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
         fgets(z_stdin, strlen(z_stdin), stdin);
         strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
+
 
         if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
@@ -78,7 +74,7 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
-        
+        //make void fce form here
         int j = 0;
 
         while(j <= (int) strlen(tel_cislo))
@@ -105,10 +101,16 @@ int main(int argc, char *argv[])
                 {
                     printf("%s %s\n",jmeno, tel_cislo);
                     j = (int) strlen(tel_cislo);
+                    cislo_vypsano = true;
                     break;
                 }
                                
             }
+            
+        }
+        if(!cislo_vypsano)
+        {
+            printf("Not found\n");
             
         }
     }
