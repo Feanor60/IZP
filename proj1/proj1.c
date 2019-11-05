@@ -27,9 +27,40 @@ void vypis_kontakty()
     }       
 }
 
-void prohledej_seznam(char tel_cislo[101], vyhledavaci_argument[101])
+void prohledej_seznam(char tel_cislo[101], char vyhledavaci_parametr[101], char jmeno[101])
 {
-    
+    int j = 0;
+
+    while(j <= (int) strlen(tel_cislo))
+    {
+        bool nepreruseno = true; //kontroluje zda je dodrzena posloupnost
+        int nalezeno = 0; //TODO
+        int i = 0;
+        
+        while(nepreruseno)
+        {
+            if(vyhledavaci_parametr[i] == tel_cislo[j])
+            {
+                nalezeno++;
+                i++;
+            }
+            else
+            {
+                nepreruseno = false;
+            }
+                
+            j++;
+
+            if((int) strlen(vyhledavaci_parametr) == nalezeno)
+            {
+                printf("%s %s\n",jmeno, tel_cislo);
+                j = (int) strlen(tel_cislo);
+                break;
+            }
+                               
+        }
+            
+    }
 }
 
 int main(int argc, char *argv[])
@@ -74,45 +105,15 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
+        prohledej_seznam(tel_cislo, vyhledavaci_parametr, jmeno);
+
         //make void fce form here
-        int j = 0;
-
-        while(j <= (int) strlen(tel_cislo))
-        {
-            bool nepreruseno = true; //kontroluje zda je dodrzena posloupnost
-            int nalezeno = 0; //TODO
-            int i = 0;
         
-            while(nepreruseno)
-            {
-                if(vyhledavaci_parametr[i] == tel_cislo[j])
-                {
-                    nalezeno++;
-                    i++;
-                }
-                else
-                {
-                    nepreruseno = false;
-                }
-                
-                j++;
-
-                if((int) strlen(vyhledavaci_parametr)==nalezeno)
-                {
-                    printf("%s %s\n",jmeno, tel_cislo);
-                    j = (int) strlen(tel_cislo);
-                    cislo_vypsano = true;
-                    break;
-                }
-                               
-            }
+        // if(!cislo_vypsano)
+        // {
+        //     printf("Not found\n");
             
-        }
-        if(!cislo_vypsano)
-        {
-            printf("Not found\n");
-            
-        }
+        // }
     }
    
     //vypis nalezenych kontaktu
