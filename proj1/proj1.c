@@ -27,7 +27,7 @@ void vypis_kontakty()
     }       
 }
 
-void prohledej_seznam(char tel_cislo[101], char vyhledavaci_parametr[101], char jmeno[101])
+int prohledej_seznam(char tel_cislo[101], char vyhledavaci_parametr[101])
 {
     int j = 0;
 
@@ -51,16 +51,18 @@ void prohledej_seznam(char tel_cislo[101], char vyhledavaci_parametr[101], char 
                 
             j++;
 
-            if((int) strlen(vyhledavaci_parametr) == nalezeno)
-            {
-                printf("%s %s\n",jmeno, tel_cislo);
-                j = (int) strlen(tel_cislo);
-                break;
-            }
+            
                                
         }
+        if((int) strlen(vyhledavaci_parametr) == nalezeno)
+            {
+                return 1;
+                break;
+            }
             
     }
+    return 0;
+    
 }
 
 int main(int argc, char *argv[])
@@ -85,14 +87,18 @@ int main(int argc, char *argv[])
     char jmeno[101];
     char tel_cislo[101];
     char z_stdin[101];
-    bool cislo_vypsano = false;
+
+    bool kont_nalezen;
+    //bool cislo_vypsano = false;
 
     while(fgets(z_stdin, 101, stdin) != NULL) //dokud fgets cte z stdin
     {
         strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
-        fgets(z_stdin, strlen(z_stdin), stdin);
+        fgets(z_stdin, 101, stdin);
         strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
 
+        // fprintf(stderr,"aktualni jmeno: %s\n",jmeno);
+        // fprintf(stderr,"aktualni tel cislo: %s\n",tel_cislo);
 
         if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
@@ -105,20 +111,19 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
-        prohledej_seznam(tel_cislo, vyhledavaci_parametr, jmeno);
+        if (prohledej_seznam(tel_cislo, vyhledavaci_parametr))
+        {   
+            fprintf(stdout,"%s %s\n", jmeno, tel_cislo);
+            kont_nalezen = true;
+        }
 
-        //make void fce form here
-        
-        // if(!cislo_vypsano)
-        // {
-        //     printf("Not found\n");
-            
-        // }
+        //TODO: vyhledavani ve jmenech
     }
-   
-    //vypis nalezenych kontaktu
 
-    //nic nenalezeno
+    if(!kont_nalezen)
+    {
+        fprintf(stdout,"Not found\n");
+    }
 
 
     return 0;
