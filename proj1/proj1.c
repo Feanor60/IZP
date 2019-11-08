@@ -27,7 +27,7 @@ void vypis_kontakty()
     }       
 }
 
-int prohledej_seznam(char tel_cislo[101], char vyhledavaci_parametr[101])
+int prohledej_cislo(char tel_cislo[101], char vyhledavaci_parametr[101])
 {
     int j = 0;
 
@@ -50,10 +50,56 @@ int prohledej_seznam(char tel_cislo[101], char vyhledavaci_parametr[101])
             }
                 
             j++;
-
-            
-                               
+       
         }
+        if((int) strlen(vyhledavaci_parametr) == nalezeno)
+            {
+                return 1;
+                break;
+            }
+            
+    }
+    return 0;
+    
+}
+
+int prohledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
+{
+    int j = 0;
+    char zastupce_znaku[10][6] = {"0+","1","2abc","3def","4ghi","5jkl","6mno","7pqrs","8tuv","9wxyz"}; 
+
+    while(j <= (int) strlen(jmeno))
+    {
+        
+        char prave_hled_znaky[(int) strlen(vyhledavaci_parametr)][6];
+
+        for(int o = 0; o <= strlen(vyhledavaci_parametr));o++) //zjisti jake znaky bude hledat
+        {
+            if(vyhledavaci_parametr[o] == zastupce_znaku[o][0])
+            {
+                prave_hled_znaky[o] = zastupce_znaku[o];
+            }
+        }
+
+        bool nepreruseno = true;
+        bool zastupce_nalezen = false;
+        
+        while(nepreruseno)
+        {
+            int znaku_nalezeno = 0;
+        
+            for(int i = 0; i <= (int) strlen(vyhledavaci_parametr); i++) //posun v poli
+            {
+                int curr_char = 0;
+
+                if(prave_hled_znaky[i][curr_char] == jmeno[j])
+                {
+                    curr_char[++]
+                }
+
+            }
+        }
+
         if((int) strlen(vyhledavaci_parametr) == nalezeno)
             {
                 return 1;
@@ -111,7 +157,7 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
-        if (prohledej_seznam(tel_cislo, vyhledavaci_parametr))
+        if (prohledej_cislo(tel_cislo, vyhledavaci_parametr))
         {   
             fprintf(stdout,"%s %s\n", jmeno, tel_cislo);
             kont_nalezen = true;
