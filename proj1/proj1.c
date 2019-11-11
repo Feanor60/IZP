@@ -27,7 +27,7 @@ void vypis_kontakty()
     }       
 }
 
-int prohledej_cislo(char tel_cislo[101], char vyhledavaci_parametr[101])
+int hledej_cislo(char tel_cislo[], char vyhledavaci_parametr[])
 {
     int j = 0;
 
@@ -42,73 +42,87 @@ int prohledej_cislo(char tel_cislo[101], char vyhledavaci_parametr[101])
             if(vyhledavaci_parametr[i] == tel_cislo[j])
             {
                 nalezeno++;
+                if((int) strlen(vyhledavaci_parametr) == nalezeno)
+                {
+                    return 1;
+                    //break;
+                }
                 i++;
             }
             else
             {
                 nepreruseno = false;
             }
-                
-            j++;
-       
-        }
-        if((int) strlen(vyhledavaci_parametr) == nalezeno)
+
+            if(nepreruseno == false && i != 0)
             {
-                return 1;
-                break;
+                j--;
             }
+
+            j++;           
+                               
+        }
             
     }
     return 0;
     
 }
 
-int prohledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
+int hledej_jmeno(char jmeno[], char vyhledavaci_parametr[])
 {
-    int j = 0;
-    char zastupce_znaku[10][6] = {"0+","1","2abc","3def","4ghi","5jkl","6mno","7pqrs","8tuv","9wxyz"}; 
+    char cisla_na_pismena[10][5] = {"0+", "1", "2abc", "3def", "4ghi", "5jkl", "6mno", "7pqrs", "8tuv", "9xyz"};
+    char pouzivane_znaky[strlen(vyhledavaci_parametr)][5];
 
-    while(j <= (int) strlen(jmeno))
+    printf("cisla na pismena: %d", cisla_na_pismena[0][0]);
+
+    for(int i = 0; i <= (int) strlen(vyhledavaci_parametr); i++)
     {
-        
-        char prave_hled_znaky[(int) strlen(vyhledavaci_parametr)][6];
-
-        for(int o = 0; o <= strlen(vyhledavaci_parametr));o++) //zjisti jake znaky bude hledat
+        int j = 0;
+        while (j <= 9)
         {
-            if(vyhledavaci_parametr[o] == zastupce_znaku[o][0])
+            if(vyhledavaci_parametr[i] == cisla_na_pismena[j][0])
             {
-                prave_hled_znaky[o] = zastupce_znaku[o];
-            }
-        }
-
-        bool nepreruseno = true;
-        bool zastupce_nalezen = false;
-        
-        while(nepreruseno)
-        {
-            int znaku_nalezeno = 0;
-        
-            for(int i = 0; i <= (int) strlen(vyhledavaci_parametr); i++) //posun v poli
-            {
-                int curr_char = 0;
-
-                if(prave_hled_znaky[i][curr_char] == jmeno[j])
-                {
-                    curr_char[++]
-                }
-
-            }
-        }
-
-        if((int) strlen(vyhledavaci_parametr) == nalezeno)
-            {
-                return 1;
+                strcpy(pouzivane_znaky[i],cisla_na_pismena[j]);
+                //printf("kopirovane: %s", pouzivane_znaky);
                 break;
             }
-            
+            j++;
+        }
+    }
+
+    int j = 0;
+    while(j <(int) strlen(jmeno))
+    {
+        int curr_pole = 0;
+        int nalezeno = 0;
+        while(nalezeno == curr_pole)
+        {
+            int curr_char = 0;
+            while(curr_char <= (int) strlen(pouzivane_znaky[curr_pole]))
+            {
+                if(pouzivane_znaky[curr_pole][curr_char] == jmeno[j])
+                {
+                    nalezeno++;
+
+                    if(nalezeno == (int) strlen(vyhledavaci_parametr))
+                    return 1;
+
+                    break;
+
+                }
+                
+                curr_char++;
+            }
+            curr_pole++;
+
+            // if(nalezeno < curr_pole && curr_pole != 0)
+            // {
+            //     j--;
+            // }
+            // j++;
+        }    
     }
     return 0;
-    
 }
 
 int main(int argc, char *argv[])
@@ -157,9 +171,9 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
-        if (prohledej_cislo(tel_cislo, vyhledavaci_parametr))
+        if (hledej_cislo(tel_cislo, vyhledavaci_parametr)) //hledej jmeno docasne nefunguje, jinak by to bylo v podmince
         {   
-            fprintf(stdout,"%s %s\n", jmeno, tel_cislo);
+            fprintf(stdout,"%s, %s\n", jmeno, tel_cislo);
             kont_nalezen = true;
         }
 
