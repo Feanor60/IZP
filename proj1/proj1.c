@@ -2,13 +2,16 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define DELKA_POLE 101
+
+//hlavicka - jmeno, IZP, ... prvni radek
 
 void vypis_kontakty()
 {
-    char from_seznam[101];
+    char from_seznam[DELKA_POLE]; //define delku
     unsigned radek = 1; //pocitadlo na radky
 
-    while(fgets(from_seznam, 101, stdin) != 0)
+    while(fgets(from_seznam, DELKA_POLE, stdin) != 0)
     {
         if(from_seznam[strlen(from_seznam) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
@@ -27,7 +30,7 @@ void vypis_kontakty()
     }       
 }
 
-int hledej_cislo(char tel_cislo[101], char vyhledavaci_parametr[101])
+int hledej_cislo(char tel_cislo[DELKA_POLE], char vyhledavaci_parametr[DELKA_POLE])
 {
     int j = 0;
 
@@ -68,12 +71,10 @@ int hledej_cislo(char tel_cislo[101], char vyhledavaci_parametr[101])
     
 }
 
-bool hledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
+bool hledej_jmeno(char jmeno[DELKA_POLE], char vyhledavaci_parametr[DELKA_POLE])
 {
     char cisla_na_pismena[10][6] = {"0+", "1", "2abc", "3def", "4ghi", "5jkl", "6mno", "7pqrs", "8tuv", "9xyz"};
     char pouzivane_znaky[strlen(vyhledavaci_parametr)][6];
-
-   // printf("cisla na pismena: %d", cisla_na_pismena[0][0]);
 
     for(int i = 0; i < (int) strlen(vyhledavaci_parametr); i++)
     {
@@ -91,7 +92,7 @@ bool hledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
     }
 
     int j = 0;
-    while(j <(int) strlen(jmeno))
+    while(j < (int) strlen(jmeno))
     {
         int curr_pole = 0;
         int nalezeno = 0;
@@ -105,7 +106,7 @@ bool hledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
                     nalezeno++;
 
                     if(nalezeno == (int) strlen(vyhledavaci_parametr))
-                    return true;
+                        return true;
 
                     break;
 
@@ -115,10 +116,11 @@ bool hledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
             }
             curr_pole++;
 
-            // if(nalezeno < curr_pole && curr_pole != 0)
-            // {
-            //     j--;
-            // }
+            if(nalezeno < curr_pole && curr_pole != 1)
+            {
+                j--;
+            }
+            
             j++;
         }    
     }
@@ -142,23 +144,19 @@ int main(int argc, char *argv[])
        return 0;
     }
 
-    //cyklus pro hledani v seznam.txt
-
-    char jmeno[101];
-    char tel_cislo[101];
-    char z_stdin[101];
+    char jmeno[DELKA_POLE];
+    char tel_cislo[DELKA_POLE];
+    char z_stdin[DELKA_POLE];
 
     bool kont_nalezen;
-    //bool cislo_vypsano = false;
 
-    while(fgets(z_stdin, 101, stdin) != NULL) //dokud fgets cte z stdin
+    while(fgets(z_stdin, DELKA_POLE, stdin) != NULL) //dokud fgets cte z stdin
     {
         strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
-        fgets(z_stdin, 101, stdin);
+        fgets(z_stdin, DELKA_POLE, stdin);
         strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
 
-        // fprintf(stderr,"aktualni jmeno: %s\n",jmeno);
-        // fprintf(stderr,"aktualni tel cislo: %s\n",tel_cislo);
+        //TODO: tolower funkce
 
         if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
@@ -171,13 +169,11 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
-        if (hledej_cislo(tel_cislo, vyhledavaci_parametr) || hledej_jmeno(jmeno, vyhledavaci_parametr)) //hledej jmeno docasne nefunguje, jinak by to bylo v podmince
+        if (hledej_cislo(tel_cislo, vyhledavaci_parametr) || hledej_jmeno(jmeno, vyhledavaci_parametr))
         {   
             fprintf(stdout,"%s, %s\n", jmeno, tel_cislo);
             kont_nalezen = true;
         }
-
-        //TODO: vyhledavani ve jmenech
     }
 
     if(!kont_nalezen)
