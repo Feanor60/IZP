@@ -27,7 +27,7 @@ void vypis_kontakty()
     }       
 }
 
-int hledej_cislo(char tel_cislo[], char vyhledavaci_parametr[])
+int hledej_cislo(char tel_cislo[101], char vyhledavaci_parametr[101])
 {
     int j = 0;
 
@@ -68,14 +68,14 @@ int hledej_cislo(char tel_cislo[], char vyhledavaci_parametr[])
     
 }
 
-int hledej_jmeno(char jmeno[], char vyhledavaci_parametr[])
+bool hledej_jmeno(char jmeno[101], char vyhledavaci_parametr[101])
 {
-    char cisla_na_pismena[10][5] = {"0+", "1", "2abc", "3def", "4ghi", "5jkl", "6mno", "7pqrs", "8tuv", "9xyz"};
-    char pouzivane_znaky[strlen(vyhledavaci_parametr)][5];
+    char cisla_na_pismena[10][6] = {"0+", "1", "2abc", "3def", "4ghi", "5jkl", "6mno", "7pqrs", "8tuv", "9xyz"};
+    char pouzivane_znaky[strlen(vyhledavaci_parametr)][6];
 
-    printf("cisla na pismena: %d", cisla_na_pismena[0][0]);
+   // printf("cisla na pismena: %d", cisla_na_pismena[0][0]);
 
-    for(int i = 0; i <= (int) strlen(vyhledavaci_parametr); i++)
+    for(int i = 0; i < (int) strlen(vyhledavaci_parametr); i++)
     {
         int j = 0;
         while (j <= 9)
@@ -105,7 +105,7 @@ int hledej_jmeno(char jmeno[], char vyhledavaci_parametr[])
                     nalezeno++;
 
                     if(nalezeno == (int) strlen(vyhledavaci_parametr))
-                    return 1;
+                    return true;
 
                     break;
 
@@ -119,10 +119,10 @@ int hledej_jmeno(char jmeno[], char vyhledavaci_parametr[])
             // {
             //     j--;
             // }
-            // j++;
+            j++;
         }    
     }
-    return 0;
+    return false;
 }
 
 int main(int argc, char *argv[])
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
             tel_cislo[strlen(tel_cislo) - 1] = '\0';
         }
 
-        if (hledej_cislo(tel_cislo, vyhledavaci_parametr)) //hledej jmeno docasne nefunguje, jinak by to bylo v podmince
+        if (hledej_cislo(tel_cislo, vyhledavaci_parametr) || hledej_jmeno(jmeno, vyhledavaci_parametr)) //hledej jmeno docasne nefunguje, jinak by to bylo v podmince
         {   
             fprintf(stdout,"%s, %s\n", jmeno, tel_cislo);
             kont_nalezen = true;
