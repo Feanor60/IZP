@@ -118,7 +118,6 @@ bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELK
                         return true;
 
                     break;
-
                 }
                 
                 curr_char++;
