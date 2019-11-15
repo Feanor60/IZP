@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
-#define DELKA_POLE 101
+#define MAX_DELKA_POLE 101
 
 //hlavicka - jmeno, IZP, ... prvni radek
 
 void vypis_kontakty()
 {
-    char from_seznam[DELKA_POLE]; //define delku
+    char from_seznam[MAX_DELKA_POLE]; //define delku
     unsigned radek = 1; //pocitadlo na radky
 
-    while(fgets(from_seznam, DELKA_POLE, stdin) != 0)
+    while(fgets(from_seznam, MAX_DELKA_POLE, stdin) != 0)
     {
         if(from_seznam[strlen(from_seznam) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
@@ -30,7 +31,7 @@ void vypis_kontakty()
     }       
 }
 
-int hledej_cislo(char tel_cislo[DELKA_POLE], char vyhledavaci_parametr[DELKA_POLE])
+int hledej_cislo(char tel_cislo[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])
 {
     int j = 0;
 
@@ -71,7 +72,7 @@ int hledej_cislo(char tel_cislo[DELKA_POLE], char vyhledavaci_parametr[DELKA_POL
     
 }
 
-bool hledej_jmeno(char jmeno[DELKA_POLE], char vyhledavaci_parametr[DELKA_POLE])
+bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])
 {
     char cisla_na_pismena[10][6] = {"0+", "1", "2abc", "3def", "4ghi", "5jkl", "6mno", "7pqrs", "8tuv", "9xyz"};
     char pouzivane_znaky[strlen(vyhledavaci_parametr)][6];
@@ -91,8 +92,16 @@ bool hledej_jmeno(char jmeno[DELKA_POLE], char vyhledavaci_parametr[DELKA_POLE])
         }
     }
 
+    char temp_jmeno[MAX_DELKA_POLE];
+    strcpy(temp_jmeno,jmeno);
+
+    for(int i = 0; temp_jmeno[i]; i++)
+    {
+        temp_jmeno[i] = tolower(temp_jmeno[i]);
+    }
+
     int j = 0;
-    while(j < (int) strlen(jmeno))
+    while(j < (int) strlen(temp_jmeno))
     {
         int curr_pole = 0;
         int nalezeno = 0;
@@ -101,7 +110,7 @@ bool hledej_jmeno(char jmeno[DELKA_POLE], char vyhledavaci_parametr[DELKA_POLE])
             int curr_char = 0;
             while(curr_char <= (int) strlen(pouzivane_znaky[curr_pole]))
             {
-                if(pouzivane_znaky[curr_pole][curr_char] == jmeno[j])
+                if(pouzivane_znaky[curr_pole][curr_char] == temp_jmeno[j])
                 {
                     nalezeno++;
 
@@ -144,19 +153,19 @@ int main(int argc, char *argv[])
        return 0;
     }
 
-    char jmeno[DELKA_POLE];
-    char tel_cislo[DELKA_POLE];
-    char z_stdin[DELKA_POLE];
+    char jmeno[MAX_DELKA_POLE];
+    char tel_cislo[MAX_DELKA_POLE];
+    char z_stdin[MAX_DELKA_POLE];
 
     bool kont_nalezen;
 
-    while(fgets(z_stdin, DELKA_POLE, stdin) != NULL) //dokud fgets cte z stdin
+    while(fgets(z_stdin, MAX_DELKA_POLE, stdin) != NULL) //dokud fgets cte z stdin
     {
         strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
-        fgets(z_stdin, DELKA_POLE, stdin);
+        fgets(z_stdin, MAX_DELKA_POLE, stdin);
         strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
 
-        //TODO: tolower funkce
+        //TODO: tolower funkce, using ctype
 
         if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
