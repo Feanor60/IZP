@@ -23,8 +23,12 @@ void vypis_kontakty()
         {
             from_seznam[strlen(from_seznam) - 1] = '\0';
         }
+        else
+        {
+            while(getc(stdin) != '\n');//zbavim se neplatnych znaku
+        }
 
-        if(radek % 2 == 1) //pokud je zbytek po deleni dvema 1 tak se jedna o lichy radek
+        if(radek % 2 == 1) //pokud je zbytek po deleni dvema 1 tak se jedna o radek se jmenem
         {
             printf("%s, ", from_seznam);
         }
@@ -55,7 +59,7 @@ bool hledej_cislo(char tel_cislo[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_
     return false; 
 }
 
-bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])
+bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])//prohleda jmeno
 {
     char cisla_na_pismena[10][6] = {"0+", "1", "2abc", "3def", "4ghi", "5jkl", "6mno", "7pqrs", "8tuv", "9xyz"};
     //stringy znaku ktere predstavuji alternativy pro cisla
@@ -92,7 +96,7 @@ bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELK
             if(pouzivane_znaky[curr_pole][curr_char] == temp_jmeno[j])//porovna znaky ze urciteho stringu se znakem ve jmene
             {
                 curr_pole++;
-                if(curr_pole == (int) strlen(vyhledavaci_parametr))//pokud byli v neprerusene posloupnosti nalezeny vsechny
+                if(curr_pole == (int) strlen(vyhledavaci_parametr))//pokud byly nalezeny vsechny vyhledavaci znaky funkce vrati true
                 {
                     return true;
                 }                
@@ -116,7 +120,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if(vyhledavaci_parametr==NULL)
+    if(vyhledavaci_parametr==NULL)//pokud nebyl zadan vyhledavaci parametr program vypise vsechny kontakty
     {
        vypis_kontakty();
        return 0;
