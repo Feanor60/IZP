@@ -92,7 +92,6 @@ bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELK
         int curr_char = 0;
         while(curr_char < (int) strlen(pouzivane_znaky[curr_pole]))
         {
-            //printf("%d : %d : %d\n", pouzivane_znaky[curr_pole][curr_char], temp_jmeno[j], curr_pole);
             if(pouzivane_znaky[curr_pole][curr_char] == temp_jmeno[j])//porovna znaky ze urciteho stringu se znakem ve jmene
             {
                 curr_pole++;
