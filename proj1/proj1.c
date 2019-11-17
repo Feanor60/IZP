@@ -1,6 +1,7 @@
 /*
 **@author: Vojtech Bubela (xbubel08)
 **predmet: IZP
+**projekt 1, reseneo s bosusovym zadanim
 **VUT FIT
 */
 
@@ -35,44 +36,23 @@ void vypis_kontakty()
     }       
 }
 
-int hledej_cislo(char tel_cislo[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])
+bool hledej_cislo(char tel_cislo[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])
 {
-    int j = 0;
-
-    while(j <= (int) strlen(tel_cislo))
-    {
-        bool nepreruseno = true; //kontroluje zda je dodrzena posloupnost
-        int nalezeno = 0;
-        int i = 0;
-        
-        while(nepreruseno)//kontroluje neprerusenou posloupnost
+    int i = 0;
+   
+    for(int j = 0; j <= (int) strlen(tel_cislo); j++)
+    {        
+        if(vyhledavaci_parametr[i] == tel_cislo[j])//porovnava jednotlive znaky
         {
-            if(vyhledavaci_parametr[i] == tel_cislo[j])//porovnava jednotlive znaky
+            if((int) strlen(vyhledavaci_parametr) == i)//kontroluje jestli byli nalezeny vsechny prvky vyhledavaciho argumentu
             {
-                nalezeno++;//pokud se znaky rovnaji, pocitadlo znaku se zvetsi
-                if((int) strlen(vyhledavaci_parametr) == nalezeno)//kontroluje jestli byli nalezeny vsechny prvky vyhledavaciho argumentu
-                {
-                    return 1;
-                }
-                i++;
+                return true;
             }
-            else
-            {
-                nepreruseno = false;//posloupnost byla prerusena
-            }
-
-            if(nepreruseno == false && i != 0)
-            {
-                j--;
-            }
-
-            j++;           
-                               
-        }
             
+            i++;
+        }
     }
-    return 0;
-    
+    return false; 
 }
 
 bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE])
@@ -83,15 +63,13 @@ bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELK
 
     for(int i = 0; i < (int) strlen(vyhledavaci_parametr); i++)//loop zjisti jake stringy znaku budu potrebovat
     {
-        int j = 0;
-        while (j <= 9)
+        for(int j = 0; j <= 9; j++)
         {
             if(vyhledavaci_parametr[i] == cisla_na_pismena[j][0])
             {
                 strcpy(pouzivane_znaky[i],cisla_na_pismena[j]);
                 break;
             }
-            j++;
         }
     }
 
@@ -103,37 +81,26 @@ bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELK
         temp_jmeno[i] = tolower(temp_jmeno[i]);//prevod jmena na male pismena
     }
 
-    int j = 0;
-    while(j < (int) strlen(temp_jmeno))//projde cele jmeno
+    int curr_pole = 0;
+
+    for(int j = 0; j <= (int) strlen(temp_jmeno); j++)//projde cele jmeno
     {
-        int curr_pole = 0;
-        int nalezeno = 0;
-        while(nalezeno == curr_pole)//kontroluje neprerusenou posloupnost
+        int curr_char = 0;
+        while(curr_char < (int) strlen(pouzivane_znaky[curr_pole]))
         {
-            int curr_char = 0;
-            while(curr_char <= (int) strlen(pouzivane_znaky[curr_pole]))
+            //printf("%d : %d : %d\n", pouzivane_znaky[curr_pole][curr_char], temp_jmeno[j], curr_pole);
+            if(pouzivane_znaky[curr_pole][curr_char] == temp_jmeno[j])//porovna znaky ze urciteho stringu se znakem ve jmene
             {
-                if(pouzivane_znaky[curr_pole][curr_char] == temp_jmeno[j])//porovna znaky ze urciteho stringu se znakem ve jmene
+                curr_pole++;
+                if(curr_pole == (int) strlen(vyhledavaci_parametr))//pokud byli v neprerusene posloupnosti nalezeny vsechny
                 {
-                    nalezeno++;
-
-                    if(nalezeno == (int) strlen(vyhledavaci_parametr))//pokud byli v neprerusene posloupnosti nalezeny vsechny
-                        return true;
-
-                    break;
-                }
+                    return true;
+                }                
+                break;
+            }
                 
-                curr_char++;
-            }
-            curr_pole++;
-
-            if(nalezeno < curr_pole && curr_pole != 1)
-            {
-                j--;
-            }
-            
-            j++;
-        }    
+            curr_char++;
+        }
     }
     return false;
 }
@@ -164,13 +131,18 @@ int main(int argc, char *argv[])
     while(fgets(z_stdin, MAX_DELKA_POLE, stdin) != NULL) //dokud fgets cte z stdin
     {
         strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
-        fgets(z_stdin, MAX_DELKA_POLE, stdin);
-        strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
 
         if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
         {
             jmeno[strlen(jmeno) - 1] = '\0';
         }
+        else
+        {
+            while(getc(stdin) != '\n');
+        }
+
+        fgets(z_stdin, MAX_DELKA_POLE, stdin);
+        strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
 
 
         if(tel_cislo[strlen(tel_cislo) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
@@ -190,7 +162,6 @@ int main(int argc, char *argv[])
     {
         fprintf(stdout,"Not found\n");
     }
-
 
     return 0;
 }
