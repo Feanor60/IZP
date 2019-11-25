@@ -19,6 +19,8 @@ double diode(double U_0, double R, double eps);
 
 double vypocet(double U_P, double U_0, double R);
 
+double absval(double x);
+
 int main(int argc, char *argv[])
 {
     if(argc < 3)
@@ -28,7 +30,8 @@ int main(int argc, char *argv[])
     }
 
     char *parametr;
-    double U_P;
+    double Up;
+    double Ip;
 
     parametr = argv[1];
     double U_0 = storedouble(parametr);
@@ -37,9 +40,30 @@ int main(int argc, char *argv[])
     parametr = argv[3];
     double eps = storedouble(parametr);
 
-    U_P = diode(U_0, R, eps); 
+    Up = diode(U_0, R, eps);
+    Ip = I_0 * (exp(Up / U_T) - 1);
 
-    printf("U_0: %g\nR: %g\neps: %g\nU_P: %g\n", U_0, R, eps, U_P);
+    if(U_0 > 0)
+    {
+        printf("Up=%g V\n",Up);
+        printf("Ip=%g A\n",Ip);
+    }else
+    {
+        fprintf(stderr,"invalid arguments\n");
+        return 1;
+    }
+    
+    return 0;
+}
+
+double absval(double x)
+{
+    if(x < 0)
+        return -x;
+    else
+    {
+        return x;
+    }
     return 0;
 }
 
@@ -54,7 +78,7 @@ double storedouble(char *parametr) //rename
         return 1;
     }
 
-    fprintf(stdout,"argument: %g\n", ntr);
+    // fprintf(stdout,"argument: %g\n", ntr);
 
     return ntr;
 }
@@ -63,44 +87,79 @@ double diode(double U_0, double R ,double eps)
 {
     double a = 0;
     double b = U_0;
-    double c;
-    int num_of_iterations;
-    int max_num_of_iterations = 1000;
+    // double c;
+    double middle = (a+b)/2;
+    double fmid = vypocet(middle,U_0,R);
+    int max_iterac = 1000;
+    int iterac = 0;
 
-    if(a > b)
+    while(absval(b - a) > eps)
     {
-        fprintf(stderr,"invalid arguments\n");
-        return 1;
-    }
-    
-    while (num_of_iterations <= max_num_of_iterations)
-    {
-        c = (a+b)/2;//new midpoint
-
-        if (vypocet(c, b, R) == 0 || (b-a)/2 < eps)//found
+        if(vypocet(a,U_0,R) * fmid < 0)
+            b = middle;
+        else
+            a = middle;
+        
+        if(absval(b - a) > eps)
         {
-            return c;
+            middle = (a+b)/2;
+            fmid = vypocet(middle, U_0, R);
         }
 
-        if(vypocet(c, b, R) < 0 && vypocet(c, a, R) < 0)
-            a = c;
-        else
-            b = c;
-
-        num_of_iterations++;
-
-        if(num_of_iterations == max_num_of_iterations)
+        if(iterac == max_iterac)
         {
-            fprintf(stderr,"dosazen maximalni pocet iteraci");
+            fprintf(stderr,"too many iterations\n");
             return 1;
-        }   
+        }
+
+        iterac++;
+        
     }
 
-    printf("U_P: %g, U_0: %g, eps: %g", c, U_0, eps);
-    return c;
+    return middle;
+    // int num_of_iterations;
+    // int max_num_of_iterations = 1000;
+
+    // if(a > b)
+    // {
+    //     fprintf(stderr,"invalid arguments\n");
+    //     return 1;
+    // }
+    
+    // while (num_of_iterations <= max_num_of_iterations)
+    // {
+    //     c = (a+b)/2;//new midpoint
+
+    //     if (vypocet(c, b, R) == 0 || (b-a)/2 < eps)//found
+    //     {
+    //         return c;
+    //     }
+
+    //     if(vypocet(c, b, R) * vypocet(a, b, R) < 0)
+    //     {
+    //         a = c;
+    //         printf("-");
+    //     }    
+    //     else
+    //     {
+    //         b = c;
+    //         printf("+");
+    //     }
+    //     num_of_iterations++;
+
+    //     printf("middle: %g\n",c);
+
+    //     if(num_of_iterations == max_num_of_iterations)
+    //     {
+    //         fprintf(stderr,"dosazen maximalni pocet iteraci");
+    //         return 1;
+    //     }   
+    // }
+
+    // return 0;
 }
 
 double vypocet(double U_P, double U_0, double R)
 {
-    return (I_0 * (exp(U_P / U_T) - 1) - ((U_0 - U_P) / R));
+    return (I_0 * (exp(U_P / U_T) - 1)) - ((U_0 - U_P) / R);
 }
