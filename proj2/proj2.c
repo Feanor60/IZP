@@ -10,10 +10,10 @@
 #include <string.h>
 #include <math.h>
 
-#define I_0 1.e-12
-#define U_T 25.8563e-3
+#define I_0 1.e-12 //zadana konstanta
+#define U_T 25.8563e-3 //zadana konstanta
 
-double storedouble(char *parametr); //rename
+double storedouble(char *parametr);
 
 double diode(double U_0, double R, double eps);
 
@@ -23,7 +23,7 @@ double absval(double x);
 
 int main(int argc, char *argv[])
 {
-    if(argc < 3)
+    if(argc < 3) //kontrola vstupnich parametru
     {
         fprintf(stderr,"invalidni pocet vstupnich paramentru");
         return 1;
@@ -33,30 +33,43 @@ int main(int argc, char *argv[])
     double Up;
     double Ip;
 
-    parametr = argv[1];
-    double U_0 = storedouble(parametr);
-    parametr = argv[2];
-    double R = storedouble(parametr);
-    parametr = argv[3];
-    double eps = storedouble(parametr);
+    parametr = argv[1]; //nacitani vstupu
+    double U_0 = storedouble(parametr); //prevod ze string na double
 
-    Up = diode(U_0, R, eps);
-    Ip = I_0 * (exp(Up / U_T) - 1);
-
-    if(U_0 > 0)
-    {
-        printf("Up=%g V\n",Up);
-        printf("Ip=%g A\n",Ip);
-    }else
+    if(U_0 < 0) //kontrola vstupnich parametru
     {
         fprintf(stderr,"invalid arguments\n");
         return 1;
     }
+
+    parametr = argv[2];
+    double R = storedouble(parametr);
+
+    if(R < 0)
+    {
+        fprintf(stderr,"invalid arguments\n");
+        return 1;
+    }
+
+    parametr = argv[3];
+    double eps = storedouble(parametr);
+
+    if(eps < 0)
+    {
+        fprintf(stderr,"invalid arguments\n");
+        return 1;
+    }
+
+    Up = diode(U_0, R, eps); //vypocet Up
+    Ip = I_0 * (exp(Up / U_T) - 1); //vypocet Ip podle vzorce
+
+    printf("Up=%g V\n",Up);
+    printf("Ip=%g A\n",Ip);
     
     return 0;
 }
 
-double absval(double x)
+double absval(double x)//vrati absolutni hodnotu cisla
 {
     if(x < 0)
         return -x;
@@ -67,18 +80,16 @@ double absval(double x)
     return 0;
 }
 
-double storedouble(char *parametr) //rename
+double storedouble(char *parametr)//prevod stringu na double
 {
     char *endpointer = NULL; 
     double ntr = strtod(parametr, &endpointer);
 
-    if(*endpointer != '\0')
+    if(*endpointer != '\0')//pokud string obsahuje parametry ktere se nedaji ulozit do promenne typu double
     {
-        fprintf(stderr,"not a double");
+        fprintf(stderr,"one of arguments is not a double\n");
         return 1;
     }
-
-    // fprintf(stdout,"argument: %g\n", ntr);
 
     return ntr;
 }
@@ -87,29 +98,28 @@ double diode(double U_0, double R ,double eps)
 {
     double a = 0;
     double b = U_0;
-    // double c;
     double middle = (a+b)/2;
     double fmid = vypocet(middle,U_0,R);
-    int max_iterac = 1000;
+    int max_iterac = 1000;//pro kontrolu max poctu iteraci
     int iterac = 0;
 
-    while(absval(b - a) > eps)
+    while(absval(b - a) > eps)//dokud nedosahneme pozadovane presnosti
     {
-        if(vypocet(a,U_0,R) * fmid < 0)
+        if(vypocet(a,U_0,R) * fmid < 0)//kontrola jestli je promena a a promena middle na stejne strane intervalu
             b = middle;
         else
             a = middle;
         
         if(absval(b - a) > eps)
         {
-            middle = (a+b)/2;
+            middle = (a+b)/2;//puleni intervalu
             fmid = vypocet(middle, U_0, R);
         }
 
-        if(iterac == max_iterac)
+        if(iterac == max_iterac)//kontrola poctu iteraci
         {
             fprintf(stderr,"too many iterations\n");
-            return 1;
+            return middle;
         }
 
         iterac++;
@@ -117,49 +127,10 @@ double diode(double U_0, double R ,double eps)
     }
 
     return middle;
-    // int num_of_iterations;
-    // int max_num_of_iterations = 1000;
-
-    // if(a > b)
-    // {
-    //     fprintf(stderr,"invalid arguments\n");
-    //     return 1;
-    // }
     
-    // while (num_of_iterations <= max_num_of_iterations)
-    // {
-    //     c = (a+b)/2;//new midpoint
-
-    //     if (vypocet(c, b, R) == 0 || (b-a)/2 < eps)//found
-    //     {
-    //         return c;
-    //     }
-
-    //     if(vypocet(c, b, R) * vypocet(a, b, R) < 0)
-    //     {
-    //         a = c;
-    //         printf("-");
-    //     }    
-    //     else
-    //     {
-    //         b = c;
-    //         printf("+");
-    //     }
-    //     num_of_iterations++;
-
-    //     printf("middle: %g\n",c);
-
-    //     if(num_of_iterations == max_num_of_iterations)
-    //     {
-    //         fprintf(stderr,"dosazen maximalni pocet iteraci");
-    //         return 1;
-    //     }   
-    // }
-
-    // return 0;
 }
 
-double vypocet(double U_P, double U_0, double R)
+double vypocet(double U_P, double U_0, double R)//vypocet odchylky
 {
     return (I_0 * (exp(U_P / U_T) - 1)) - ((U_0 - U_P) / R);
 }
