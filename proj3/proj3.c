@@ -26,36 +26,31 @@ int main(int argc, char* argv[])
     {
         fprintf(stderr,"invalid number of arguments\n");
         return 1;
-    }else
-    {
-        fprintf(stdout, "number of arguments is: %d\n", argc);
     }
     
     if(strcmp(argv[1],"--help") == 0)
     {
         help();
         return 0;
-    }else{
-        fprintf(stdout,"not helping\n");
     }
 
     FILE *fp;
     char c;
+    fprintf(stdout,"argv[1]: %s\n", argv[argc-1]);
+    // char *temp = argv[argc - 1];
 
-    for(int i = 1; i <=5; i++)
-    {
-        if(strcmp(argv[i],"soubor.txt"))
-        {
-           fp = fopen(argv[i],"r");
-           break;
-        }
-    }
+    if(strcmp(argv[argc-1],"bludiste.txt"))
+        fp = fopen("bludiste.txt","r");
+
+    int rows;
+    int cols;
 
     if(fp == NULL)
     {
         fprintf(stderr,"failed to open file\n");
         return 1;
     }else{
+        fscanf(fp,"%d %d", &rows, &cols);
         c = fgetc(fp);
         while(c != EOF)
         {
