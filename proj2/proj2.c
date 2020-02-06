@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 {
     if(argc < 3) //kontrola vstupnich parametru
     {
-        fprintf(stderr,"invalidni pocet vstupnich paramentru");
+        fprintf(stderr,"invalidni pocet vstupnich paramentru\n");
         return 1;
     }
 
