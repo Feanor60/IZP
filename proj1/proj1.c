@@ -12,6 +12,73 @@
 
 #define MAX_DELKA_POLE 101 //pocet znaku nacitanych ze stdin funkci fgets
 
+void vypis_kontakty();
+
+bool hledej_cislo(char tel_cislo[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE]);
+
+bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELKA_POLE]);//prohleda jmeno
+
+int main(int argc, char *argv[])
+{
+    char *vyhledavaci_parametr = argv[1];
+
+    // kontrola poctu vstupnich argumentu
+    if (argc > 2)
+    {
+        fprintf(stderr,"byl zadan vice nez jeden vyhledavaci argument\n");
+        return 1;
+    }
+
+    if(vyhledavaci_parametr==NULL)//pokud nebyl zadan vyhledavaci parametr program vypise vsechny kontakty
+    {
+       vypis_kontakty();
+       return 0;
+    }
+
+    char jmeno[MAX_DELKA_POLE];
+    char tel_cislo[MAX_DELKA_POLE];
+    char z_stdin[MAX_DELKA_POLE];
+
+    bool kont_nalezen;
+
+    while(fgets(z_stdin, MAX_DELKA_POLE, stdin) != NULL) //dokud fgets cte z stdin
+    {
+        strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
+
+        if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
+        {
+            jmeno[strlen(jmeno) - 1] = '\0';
+        }
+        else
+        {
+            while(getc(stdin) != '\n');
+        }
+
+        fgets(z_stdin, MAX_DELKA_POLE, stdin);
+        strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
+
+
+        if(tel_cislo[strlen(tel_cislo) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
+        {
+            tel_cislo[strlen(tel_cislo) - 1] = '\0';
+        }
+
+        //pokud je mezi telefonim cislem (nebo jmenem) a vyhledavacim argumentem nalezena shoda bude vypsan dany kontakt
+        if (hledej_cislo(tel_cislo, vyhledavaci_parametr) || hledej_jmeno(jmeno, vyhledavaci_parametr))
+        {   
+            fprintf(stdout,"%s, %s\n", jmeno, tel_cislo);
+            kont_nalezen = true;
+        }
+    }
+
+    if(!kont_nalezen)
+    {
+        fprintf(stdout,"Not found\n");
+    }
+
+    return 0;
+}
+
 void vypis_kontakty()
 {
     char from_seznam[MAX_DELKA_POLE]; //pole pro docasne ukladani stdin
@@ -106,65 +173,4 @@ bool hledej_jmeno(char jmeno[MAX_DELKA_POLE], char vyhledavaci_parametr[MAX_DELK
         }
     }
     return false;
-}
-
-int main(int argc, char *argv[])
-{
-    char *vyhledavaci_parametr = argv[1];
-
-    // kontrola poctu vstupnich argumentu
-    if (argc > 2)
-    {
-        fprintf(stderr,"byl zadan vice nez jeden vyhledavaci argument\n");
-        return 1;
-    }
-
-    if(vyhledavaci_parametr==NULL)//pokud nebyl zadan vyhledavaci parametr program vypise vsechny kontakty
-    {
-       vypis_kontakty();
-       return 0;
-    }
-
-    char jmeno[MAX_DELKA_POLE];
-    char tel_cislo[MAX_DELKA_POLE];
-    char z_stdin[MAX_DELKA_POLE];
-
-    bool kont_nalezen;
-
-    while(fgets(z_stdin, MAX_DELKA_POLE, stdin) != NULL) //dokud fgets cte z stdin
-    {
-        strcpy(jmeno, z_stdin); //ulozim lichy radek jako jmeno
-
-        if(jmeno[strlen(jmeno) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
-        {
-            jmeno[strlen(jmeno) - 1] = '\0';
-        }
-        else
-        {
-            while(getc(stdin) != '\n');
-        }
-
-        fgets(z_stdin, MAX_DELKA_POLE, stdin);
-        strcpy(tel_cislo, z_stdin); // ulozim si sudy radek jako cislo
-
-
-        if(tel_cislo[strlen(tel_cislo) - 1] == '\n') //pokud nacteny string obsahuje new line char tak ho smazu
-        {
-            tel_cislo[strlen(tel_cislo) - 1] = '\0';
-        }
-
-        //pokud je mezi telefonim cislem (nebo jmenem) a vyhledavacim argumentem nalezena shoda bude vypsan dany kontakt
-        if (hledej_cislo(tel_cislo, vyhledavaci_parametr) || hledej_jmeno(jmeno, vyhledavaci_parametr))
-        {   
-            fprintf(stdout,"%s, %s\n", jmeno, tel_cislo);
-            kont_nalezen = true;
-        }
-    }
-
-    if(!kont_nalezen)
-    {
-        fprintf(stdout,"Not found\n");
-    }
-
-    return 0;
 }
